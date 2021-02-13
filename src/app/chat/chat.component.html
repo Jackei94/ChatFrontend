@@ -1,0 +1,30 @@
+<div *ngIf="chatClient">
+  <h5>Welcome to the chat {{chatClient.nickName}}</h5>
+  <label>
+    Message:
+    <input type="text" [formControl]="message">
+  </label>
+
+  <button (click)="sendMessage()">Send Message</button>
+
+  <h4 *ngFor="let message of messages">
+    {{message.date}} - {{message.chatClient?.nickName}}: {{message.message}}
+  </h4>
+</div>
+<div *ngIf="!chatClient">
+  <label>
+    Enter Nickname:
+    <input type="text" [formControl]="nickNameFc">
+  </label>
+
+  <button (click)="sendNickName()">Send</button>
+</div>
+
+<div *ngIf="clients$ | async as clients">
+  <ul>
+    <li *ngFor="let client of clients">
+      {{client.nickName}}
+    </li>
+  </ul>
+</div>
+
