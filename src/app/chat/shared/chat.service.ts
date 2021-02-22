@@ -9,12 +9,16 @@ import {WelcomeDto} from './welcome.dto';
   providedIn: 'root'
 })
 export class ChatService {
-
   chatClient: ChatClient | undefined;
+
   constructor(private socket: Socket) { }
 
-  sendMessage(msg: string): void {
+  sendMessage(msg: ChatMessage): void {
     this.socket.emit('message', msg);
+  }
+
+  sendTyping(typing: boolean): void {
+      this.socket.emit('typing', typing);
   }
 
   listenForMessages(): Observable<ChatMessage> {
@@ -32,15 +36,17 @@ export class ChatService {
       .fromEvent<WelcomeDto>('welcome');
   }
 
-  getAllMessages(): Observable<ChatMessage[]> {
+  listenForClientTyping(): Observable<ChatClient> {
     return this.socket
-      .fromEvent<ChatMessage[]>('allMessages');
+      .fromEvent<ChatClient>('clientTyping');
+  }
+
+  listenForErrors(): Observable<string> {
+    return this.socket
+      .fromEvent<string>('error');
   }
   sendNickName(nickname: string): void {
     this.socket.emit('nickname', nickname);
-  }
-  sendDate(date: Date): void {
-    this.socket.emit('date', date);
   }
   disconnect(): void {
     this.socket.disconnect();
